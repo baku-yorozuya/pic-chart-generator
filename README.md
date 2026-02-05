@@ -2,7 +2,7 @@
 
 An advanced, browser-based tool to create stunning pie charts with image-filled segments. Good for infographics, presentations, and social media content.
 
-[**Live Demo**](WIP) | [https://github.com/baku-yorozuya/pic-chart-generator/issues](Issues)
+[**Live Demo**](WIP) | [Issues](https://github.com/baku-yorozuya/pic-chart-generator/issues)
 
 ## ✨ Key Features
 
