@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>📸 Pic-chart Generator - Baku Yorozuya</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="donation-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="app.closeModal()">×</button>
+      <h2>☕ 支持 Baku Yorozuya</h2>
+      <p class="modal-appeal">
+        我真的非常餓，如果可以請我吃塊芝士。<br>
+        如果您有任何意見，歡迎在<a href="https://github.com/baku-yorozuya/pic-chart-generator/discussions">這裡</a>留下您的建議與意見。
+      </p>
+      
+      <div class="donation-options">
+        <a href="https://www.buymeacoffee.com/你的用戶名" target="_blank" class="donate-btn bmc">
+          <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="BMC">
+          Buy me a coffee
+        </a>
+        
+        <a href="你的PayPal連結" target="_blank" class="donate-btn paypal">PayPal 贊助</a>
+      </div>
+      
+      <p class="modal-footer">點擊右上角 X 即可開始使用工具</p>
+    </div>
+  </div>
+
+  <h3>🥧 Pic-chart Generator 🥧</h3>
+  <button class="btn btn-add" onclick="app.handleAdd()">+ 新增區塊</button>
+  
+  <div class="controls" id="inputs"></div>
+  <div class="total-info" id="totalInfo"></div>
+
+  <div class="viz-container">
+    <svg viewBox="0 0 200 200">
+      <defs id="patterns"></defs>
+      <g transform="rotate(-90 100 100)"><g id="pie-segments"></g></g>
+      <g id="labels-layer"></g>
+    </svg>
+  </div>
+
+  <input type="file" id="fileInput" accept="image/*">
+
+  <div id="comment-drawer" class="drawer-overlay">
+    <div class="drawer-content">
+      <div class="drawer-header">
+        <h3>💬 社群討論</h3>
+        <button class="drawer-close" onclick="app.closeDrawer()">×</button>
+      </div>
+      <div id="giscus-container">
+        </div>
+    </div>
+  </div>
+  
+  <button class="comment-trigger-btn" onclick="app.openDrawer()">
+    💬 <span>留言建議</span>
+  </button>
+
+  <button class="info-trigger-btn" onclick="app.openModal()">
+    ☕ <span>贊助與支持</span>
+  </button>
+
+  <script src="js/state.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/comments.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
