@@ -4,17 +4,18 @@
 class AppController {
   constructor() {
     this.state = new DataState();
-    this.renderer = new ChartRenderer(document.querySelector('svg'));
-    this.inputsContainer = document.getElementById('inputs');
-    this.totalInfo = document.getElementById('totalInfo');
-    this.fileInput = document.getElementById('fileInput');
+    this.renderer = new ChartRenderer(document.querySelector("svg"));
+    this.inputsContainer = document.getElementById("inputs");
+    this.totalInfo = document.getElementById("totalInfo");
+    this.fileInput = document.getElementById("fileInput");
     this.activeInputInfo = { id: null };
-    this.modal = document.getElementById('donation-modal');
-    this.drawer = document.getElementById('comment-drawer');
+    this.modal = document.getElementById("donation-modal");
+    this.drawer = document.getElementById("comment-drawer");
     this.giscusLoaded = false;
     setTimeout(() => this.openModal(), 500);
     this.initOverlayClicks();
     this.initUXListeners();
+    this.initButtonListeners();
     this.init();
   }
 
@@ -24,8 +25,8 @@ class AppController {
   }
 
   initUXListeners() {
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
         this.closeModal();
         this.closeDrawer();
       }
@@ -37,7 +38,7 @@ class AppController {
    */
   initOverlayClicks() {
     // 點擊 Modal 遮罩關閉
-    this.modal.addEventListener('click', (e) => {
+    this.modal.addEventListener("click", (e) => {
       // 關鍵：確保點擊的是「遮罩層」本人，而不是內部的「內容框」
       if (e.target === this.modal) {
         this.closeModal();
@@ -45,16 +46,27 @@ class AppController {
     });
 
     // 點擊 Drawer 遮罩關閉
-    this.drawer.addEventListener('click', (e) => {
+    this.drawer.addEventListener("click", (e) => {
       if (e.target === this.drawer) {
         this.closeDrawer();
       }
     });
   }
 
+  initButtonListeners() {
+    const downloadBtn = document.getElementById("download-btn");
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", () => {
+        // 傳入 SVG 元素
+        const svgEl = document.getElementById("pie-chart");
+        SvgExporter.exportToPng(svgEl, "my-pie-chart.png");
+      });
+    }
+  }
+
   openDrawer() {
-    this.drawer.classList.add('active');
-    
+    this.drawer.classList.add("active");
+
     // 延遲加載 Giscus 以優化性能
     if (!this.giscusLoaded) {
       this.initGiscus();
@@ -63,22 +75,22 @@ class AppController {
   }
 
   closeDrawer() {
-    this.drawer.classList.remove('active');
+    this.drawer.classList.remove("active");
   }
 
   initGiscus() {
     const comments = new CommentsManager({});
-    comments.init('giscus-container');
+    comments.init("giscus-container");
   }
 
   openModal() {
-    this.modal.classList.add('active');
+    this.modal.classList.add("active");
   }
 
   closeModal() {
-    this.modal.classList.remove('active');
+    this.modal.classList.remove("active");
     // 可選：紀錄在 localStorage，讓使用者今天內不會再看到第二次
-    localStorage.setItem('modalDismissed', Date.now());
+    localStorage.setItem("modalDismissed", Date.now());
   }
 
   render() {
@@ -100,37 +112,39 @@ class AppController {
     if (!el) return;
     el.focus();
     const len = el.value.length;
-    if (el.type === 'text') {
+    if (el.type === "text") {
       el.setSelectionRange(len, len);
-    } else if (el.type === 'number') {
-      el.type = 'text'; el.setSelectionRange(len, len); el.type = 'number';
+    } else if (el.type === "number") {
+      el.type = "text";
+      el.setSelectionRange(len, len);
+      el.type = "number";
     }
   }
 
   renderInputs() {
-    this.inputsContainer.innerHTML = '';
+    this.inputsContainer.innerHTML = "";
     this.state.data.forEach((item, i) => {
-      const div = document.createElement('div');
-      div.className = 'input-group';
+      const div = document.createElement("div");
+      div.className = "input-group";
       div.innerHTML = `
-        <span>#${i+1}</span>
+        <span>#${i + 1}</span>
         <input type="text" id="txt-${i}" value="${item.label}">
         <input type="number" id="num-${i}" value="${item.percent}" step="any"> %
         <button class="btn btn-del" onclick="app.handleRemove(${i})">✕</button>
       `;
 
       // 文字更新邏輯不變
-      div.querySelector(`#txt-${i}`).oninput = (e) => { 
-        this.state.updateItem(i, 'label', e.target.value); 
-        this.render(); 
+      div.querySelector(`#txt-${i}`).oninput = (e) => {
+        this.state.updateItem(i, "label", e.target.value);
+        this.render();
       };
 
       // 數字更新邏輯：確保捕捉到小數
-      div.querySelector(`#num-${i}`).oninput = (e) => { 
+      div.querySelector(`#num-${i}`).oninput = (e) => {
         const rawValue = e.target.value;
         // 更新 state 中的數值 (轉換為浮點數供運算)
-        this.state.updateItem(i, 'percent', parseFloat(rawValue) || 0);
-        
+        this.state.updateItem(i, "percent", parseFloat(rawValue) || 0);
+
         // 關鍵：不要在這裡重新呼叫 this.render()，除非你想即時更新圖表
         // 但為了讓使用者能打出 ".5"，我們需要一個折衷方案：
         this.renderer.draw(this.state.data, (i) => this.openFilePicker(i));
@@ -148,13 +162,35 @@ class AppController {
     this.totalInfo.style.color = ok ? "#00a76f" : "#f5222d";
   }
 
-  handleAdd() { this.state.addSlice(); this.render(); }
-  handleRemove(i) { this.state.removeSlice(i); this.render(); }
-  openFilePicker(i) { this.activeIndex = i; this.fileInput.click(); }
+  handleAdd() {
+    this.state.addSlice();
+    this.render();
+  }
+  handleRemove(i) {
+    this.state.removeSlice(i);
+    this.render();
+  }
+  openFilePicker(i) {
+    this.activeIndex = i;
+    this.fileInput.click();
+  }
   handleFileChange(e) {
-    if (e.target.files[0]) {
-      this.state.updateItem(this.activeIndex, 'img', URL.createObjectURL(e.target.files[0]));
-      this.render();
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      // 當檔案讀取完成後觸發
+      reader.onload = (event) => {
+        // event.target.result 就是該圖片的 Base64 字串
+        const base64Data = event.target.result;
+
+        this.state.updateItem(this.activeIndex, "img", base64Data);
+
+        this.render(); // 重新渲染，此時 SVG 內的 <image> 會拿到 Base64
+      };
+
+      // 關鍵：將檔案讀取為 DataURL (Base64)
+      reader.readAsDataURL(file);
     }
   }
 }

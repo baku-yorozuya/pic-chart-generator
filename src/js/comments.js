@@ -15,7 +15,7 @@ class CommentsManager {
       theme: "preferred_color_scheme",
       lang: "zh-TW",
       crossOrigin: "anonymous",
-      ...config
+      ...config,
     };
   }
 

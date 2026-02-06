@@ -4,21 +4,37 @@
 class DataState {
   constructor(initialData) {
     this.data = initialData || [
-      { percent: 40, label: "旅遊生活", img: 'https://picsum.photos/300/300?random=101' },
-      { percent: 35, label: "科技資訊", img: 'https://picsum.photos/300/300?random=102' },
-      { percent: 25, label: "美食烹飪", img: 'https://picsum.photos/300/300?random=103' }
+      {
+        percent: 40,
+        label: "旅遊生活",
+        img: "https://picsum.photos/300/300?random=101",
+      },
+      {
+        percent: 35,
+        label: "科技資訊",
+        img: "https://picsum.photos/300/300?random=102",
+      },
+      {
+        percent: 25,
+        label: "美食烹飪",
+        img: "https://picsum.photos/300/300?random=103",
+      },
     ];
   }
 
   addSlice() {
     if (this.data.length > 0) {
-      this.data.push({ 
-        percent: 1, 
-        label: "新項目", 
-        img: `https://picsum.photos/300/300?random=${Date.now()}` 
+      this.data.push({
+        percent: 1,
+        label: "新項目",
+        img: `https://picsum.photos/300/300?random=${Date.now()}`,
       });
     } else {
-      this.data.push({ percent: 100, label: "初始項目", img: 'https://picsum.photos/300/300' });
+      this.data.push({
+        percent: 100,
+        label: "初始項目",
+        img: "https://picsum.photos/300/300",
+      });
     }
   }
 
