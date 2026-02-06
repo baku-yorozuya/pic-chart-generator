@@ -16,12 +16,12 @@
       </p>
       
       <div class="donation-options">
-        <a href="https://www.buymeacoffee.com/你的用戶名" target="_blank" class="donate-btn bmc">
+        <a href="https://www.buymeacoffee.com/baku_yorozuya" target="_blank" class="donate-btn bmc">
           <img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="BMC">
           Buy me a coffee
         </a>
         
-        <a href="你的PayPal連結" target="_blank" class="donate-btn paypal">PayPal 贊助</a>
+        <!-- <a href="你的PayPal連結" target="_blank" class="donate-btn paypal">PayPal 贊助</a> -->
       </div>
       
       <p class="modal-footer">點擊右上角 X 即可開始使用工具</p>
@@ -34,8 +34,10 @@
   <div class="controls" id="inputs"></div>
   <div class="total-info" id="totalInfo"></div>
 
+  <!-- <button id="download-btn" class="btn-download">下載圖片</button> -->
+
   <div class="viz-container">
-    <svg viewBox="0 0 200 200">
+    <svg id="pie-chart" viewBox="0 0 200 200">
       <defs id="patterns"></defs>
       <g transform="rotate(-90 100 100)"><g id="pie-segments"></g></g>
       <g id="labels-layer"></g>
@@ -63,6 +65,7 @@
     ☕ <span>贊助與支持</span>
   </button>
 
+  <script src="js/svg-exporter.js"></script>
   <script src="js/state.js"></script>
   <script src="js/renderer.js"></script>
   <script src="js/comments.js"></script>
