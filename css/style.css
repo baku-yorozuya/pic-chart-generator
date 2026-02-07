@@ -1,0 +1,215 @@
+/**
+ * @fileoverview css/style.css
+ * @description 全域基礎樣式，處理佈局骨架與通用視覺效果。
+ * @version 1.0.0
+ */
+
+/* 基礎重置 */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  background-color: #f0f2f5;
+  color: #2d3436;
+  overflow: hidden; /* 防止手機瀏覽器拉動回彈影響繪圖 */
+}
+
+/* 佈局容器 */
+#app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 鎖死為螢幕高度 */
+  width: 100vw;
+  overflow: hidden; /* 防止整體出現捲軸 */
+}
+
+/* 圓餅圖畫布區域 */
+#chart-viewport {
+  flex: 1; /* 自動佔滿剩餘空間 */
+  min-height: 0; /* 關鍵：允許 Flex 子元素縮小到小於內容高度 */
+  position: relative;
+  background-color: #f8f9fa;
+}
+
+#main-svg-canvas {
+  width: 100%; /* 寬度填滿 */
+  height: 100%; /* 高度填滿 */
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  /* 保持比例縮放，並將內容完整包含在內 */
+  object-fit: contain;
+}
+
+/* 浮動按鈕 (FAB) 樣式 */
+.fab-container {
+  position: fixed;
+  bottom: 320px; /* 避開下方工具欄 */
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 3;
+}
+
+.fab {
+  padding: 14px 24px;
+  border-radius: 50px;
+  border: none;
+  background: #0984e3;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  white-space: nowrap;
+}
+
+.fab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+/* 數據編輯工具欄 */
+#toolbar-container {
+  height: 300px; /* 固定高度 */
+  flex-shrink: 0; /* 關鍵：禁止 Toolbar 被壓縮 */
+  background: #ffffff;
+  border-top: 1px solid #dfe6e9;
+}
+
+/* 響應式微調 (手機端) */
+@media (max-width: 600px) {
+  #toolbar-container {
+    height: 250px;
+  }
+  .fab-container {
+    bottom: 270px;
+    right: 15px;
+  }
+  .fab {
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+}
+
+/* 編輯模式下的全域樣式 */
+body.is-editing-photo #main-svg-canvas {
+  cursor: move;
+  background-color: rgba(0, 0, 0, 0.05); /* 輕微變暗提示模式切換 */
+}
+
+/* 可以為正在編輯的切片加上發光效果 */
+.segment-editing-highlight {
+  stroke: #0984e3;
+  stroke-width: 5px;
+  filter: drop-shadow(0 0 5px rgba(9, 132, 227, 0.5));
+}
+
+body.is-editing-photo #main-svg-canvas {
+  /* 提示使用者可以進行全方位操作 */
+  cursor: all-scroll;
+}
+
+/* 提示訊息（選用） */
+body.is-editing-photo::after {
+  content: "正在編輯圖片：拖動位置，滾輪縮放大小";
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.label-leader-line {
+  stroke-dasharray: 2; /* 虛線效果，看起來更精緻 */
+  opacity: 0.6;
+  pointer-events: none; /* 防止線條干擾點擊切片的動作 */
+}
+
+.chart-label {
+  font-size: 12px;
+  fill: #34495e;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.app-header {
+  height: 60px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #dfe6e9;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 1;
+  flex-shrink: 0; /* 防止被擠壓 */
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #2d3436;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+#totalInfo {
+  font-weight: bold;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  transition: 0.3s;
+  background-color: #e6fffa;
+  color: #00a76f;
+  margin-bottom: 10px;
+}
+
+#totalInfo.error {
+  background-color: #fff1f0;
+  color: #f5222d;
+}
+
+.hint-bar {
+  background-color: #f1f2f6;
+  color: #57606f;
+  font-size: 13px;
+  padding: 8px 0;
+  text-align: center;
+  border-bottom: 1px solid #dfe4ea;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+/* 編輯模式下的特殊樣式，提醒使用者 */
+.hint-bar.editing-mode {
+  background-color: #ffeaa7; /* 醒目的淡黃色 */
+  color: #d35400;
+}
+
+.donation-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-block: 20px;
+}

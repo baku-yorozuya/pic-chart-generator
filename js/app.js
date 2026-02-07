@@ -1,219 +1,89 @@
 /**
- * AppController - 應用程式中樞
+ * @fileoverview js/app.js
+ * @description 應用程式啟動器。
+ * 負責實例化所有組件，並將數據中心、渲染引擎與互動邏輯串接在一起。
+ * @version 1.0.0
+ * @author Baku Yorozuya Develop
  */
-class AppController {
-  constructor() {
-    this.state = new DataState();
-    this.renderer = new ChartRenderer(document.querySelector("svg"));
-    this.inputsContainer = document.getElementById("inputs");
-    this.totalInfo = document.getElementById("totalInfo");
-    this.fileInput = document.getElementById("fileInput");
-    this.activeInputInfo = { id: null };
-    this.modal = document.getElementById("donation-modal");
-    this.drawer = document.getElementById("comment-drawer");
-    this.giscusLoaded = false;
-    setTimeout(() => this.openModal(), 500);
-    this.initOverlayClicks();
-    this.initUXListeners();
-    this.initButtonListeners();
-    this.init();
-  }
 
-  init() {
-    this.fileInput.onchange = (e) => this.handleFileChange(e);
-    this.render();
-  }
-
-  initUXListeners() {
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        this.closeModal();
-        this.closeDrawer();
-      }
-    });
-  }
-
+(function() {
   /**
-   * 初始化遮罩點擊監聽
+   * @class App
+   * @description 負責協調整個應用程式的生命週期
    */
-  initOverlayClicks() {
-    // 點擊 Modal 遮罩關閉
-    this.modal.addEventListener("click", (e) => {
-      // 關鍵：確保點擊的是「遮罩層」本人，而不是內部的「內容框」
-      if (e.target === this.modal) {
-        this.closeModal();
+  class App {
+      constructor() {
+          // 引用已在 Instances 載入的單例
+          this.state = BakuApp.Instances.state;
+          this.emitter = BakuApp.Instances.eventEmitter;
+          
+          this.init();
       }
-    });
 
-    // 點擊 Drawer 遮罩關閉
-    this.drawer.addEventListener("click", (e) => {
-      if (e.target === this.drawer) {
-        this.closeDrawer();
+      /**
+       * @description 初始化所有組件與中間件
+       */
+      init() {
+          // 1. 初始化核心渲染器
+          BakuApp.Instances.chart = new BakuApp.Components.PicChart('main-svg-canvas');
+
+          // 2. 初始化互動中間件 (注入渲染器實例)
+          BakuApp.Instances.interaction = new BakuApp.Middleware.Interaction(
+              document.getElementById('main-svg-canvas'),
+              BakuApp.Instances.chart
+          );
+
+          // 3. 初始化導出模組
+          BakuApp.Instances.exporter = new BakuApp.Middleware.Export(
+              document.getElementById('main-svg-canvas')
+          );
+
+          // 4. 初始化 UI 組件
+          BakuApp.Instances.toolbar = new BakuApp.Components.Toolbar('toolbar-container');
+          BakuApp.Instances.donation = new BakuApp.Components.DonationModal('modal-container');
+          BakuApp.Instances.comments = new BakuApp.Components.CommentDrawer('drawer-container');
+
+          this.bindGlobalEvents();
+          this.firstRender();
       }
-    });
+
+      /**
+       * @description 綁定全域 UI 按鈕與數據訂閱
+       */
+      bindGlobalEvents() {
+          // 訂閱狀態變更，當數據更新時自動重新渲染圖表
+          this.emitter.on('STATE_CHANGED', (data) => {
+              BakuApp.Instances.chart.render(data.segments);
+          });
+
+          // 贊助按鈕
+          document.getElementById('btn-donation').onclick = () => {
+              BakuApp.Instances.donation.show();
+          };
+
+          // 留言按鈕
+          document.getElementById('btn-comments').onclick = () => {
+              BakuApp.Instances.comments.show();
+          };
+
+          // 導出 PNG 按鈕
+          document.getElementById('btn-export').onclick = () => {
+              BakuApp.Instances.exporter.exportToPng('my-awesome-pie-chart.png');
+          };
+      }
+
+      /**
+       * @description 執行首次渲染，確保畫面不留白
+       */
+      firstRender() {
+          const initialData = this.state.getData();
+          BakuApp.Instances.chart.render(initialData.segments);
+          console.log("[BakuApp] Application successfully bootstrapped.");
+      }
   }
 
-  initButtonListeners() {
-    const downloadBtn = document.getElementById("download-btn");
-    if (downloadBtn) {
-      downloadBtn.addEventListener("click", () => {
-        // 傳入 SVG 元素
-        const svgEl = document.getElementById("pie-chart");
-        SvgExporter.exportToPng(svgEl, "my-pie-chart.png");
-      });
-    }
-  }
-
-  openDrawer() {
-    this.drawer.classList.add("active");
-
-    // 延遲加載 Giscus 以優化性能
-    if (!this.giscusLoaded) {
-      this.initGiscus();
-      this.giscusLoaded = true;
-    }
-  }
-
-  closeDrawer() {
-    this.drawer.classList.remove("active");
-  }
-
-  initGiscus() {
-    const comments = new CommentsManager({});
-    comments.init("giscus-container");
-  }
-
-  openModal() {
-    this.modal.classList.add("active");
-  }
-
-  closeModal() {
-    this.modal.classList.remove("active");
-    // 可選：紀錄在 localStorage，讓使用者今天內不會再看到第二次
-    localStorage.setItem("modalDismissed", Date.now());
-  }
-
-  render() {
-    this.saveFocus();
-    const total = this.state.getTotal();
-    this.updateStatusUI(total);
-    this.renderer.draw(this.state.data, (i) => this.openFilePicker(i));
-    this.renderInputs();
-    this.restoreFocus();
-  }
-
-  saveFocus() {
-    const el = document.activeElement;
-    if (el && el.id) this.activeInputInfo = { id: el.id, type: el.type };
-  }
-
-  restoreFocus() {
-    const el = document.getElementById(this.activeInputInfo.id);
-    if (!el) return;
-    el.focus();
-    const len = el.value.length;
-    if (el.type === "text") {
-      el.setSelectionRange(len, len);
-    } else if (el.type === "number") {
-      el.type = "text";
-      el.setSelectionRange(len, len);
-      el.type = "number";
-    }
-  }
-
-  renderInputs() {
-    this.inputsContainer.innerHTML = "";
-    this.state.data.forEach((item, i) => {
-      const div = document.createElement("div");
-      div.className = "input-group";
-      div.innerHTML = `
-        <span>#${i + 1}</span>
-        <input type="text" id="txt-${i}" value="${item.label}">
-        <input type="number" id="num-${i}" value="${item.percent}" step="any"> %
-        <div class="image-adjust-panel">
-          <div class="adj-row">
-            <label>縮放</label>
-            <input type="number" step="0.1" value="${item.zoom || 1}" onchange="app.handleImgAdj(${i}, 'zoom', this.value)">
-          </div>
-          <div class="adj-row">
-            <label>左右</label>
-            <input type="number" step="1" value="${item.dx || 0}" onchange="app.handleImgAdj(${i}, 'dx', this.value)">
-          </div>
-          <div class="adj-row">
-            <label>上下</label>
-            <input type="number" step="1" value="${item.dy || 0}" onchange="app.handleImgAdj(${i}, 'dy', this.value)">
-          </div>
-        </div>
-        <button class="btn btn-del" onclick="app.handleRemove(${i})">✕</button>
-      `;
-
-      // 文字更新邏輯不變
-      div.querySelector(`#txt-${i}`).oninput = (e) => {
-        this.state.updateItem(i, "label", e.target.value);
-        this.render();
-      };
-
-      // 數字更新邏輯：確保捕捉到小數
-      div.querySelector(`#num-${i}`).oninput = (e) => {
-        const rawValue = e.target.value;
-        // 更新 state 中的數值 (轉換為浮點數供運算)
-        this.state.updateItem(i, "percent", parseFloat(rawValue) || 0);
-
-        // 關鍵：不要在這裡重新呼叫 this.render()，除非你想即時更新圖表
-        // 但為了讓使用者能打出 ".5"，我們需要一個折衷方案：
-        this.renderer.draw(this.state.data, (i) => this.openFilePicker(i));
-        this.updateStatusUI(this.state.getTotal());
-        // 注意：我們此時不重繪整個 Input 列表，以免失去輸入狀態
-      };
-      this.inputsContainer.appendChild(div);
-    });
-  }
-
-  updateStatusUI(total) {
-    this.totalInfo.innerText = `總合預覽: ${total}%`;
-    const ok = Math.abs(total - 100) < 0.01;
-    this.totalInfo.style.backgroundColor = ok ? "#e6fffa" : "#fff1f0";
-    this.totalInfo.style.color = ok ? "#00a76f" : "#f5222d";
-  }
-
-  handleAdd() {
-    this.state.addSlice();
-    this.render();
-  }
-  handleRemove(i) {
-    this.state.removeSlice(i);
-    this.render();
-  }
-  openFilePicker(i) {
-    this.activeIndex = i;
-    this.fileInput.click();
-  }
-  handleFileChange(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-
-      // 當檔案讀取完成後觸發
-      reader.onload = (event) => {
-        // event.target.result 就是該圖片的 Base64 字串
-        const base64Data = event.target.result;
-
-        this.state.updateItem(this.activeIndex, "img", base64Data);
-
-        this.render(); // 重新渲染，此時 SVG 內的 <image> 會拿到 Base64
-      };
-
-      // 關鍵：將檔案讀取為 DataURL (Base64)
-      reader.readAsDataURL(file);
-    }
-  }
-
-  handleImgAdj(index, key, value) {
-    this.state.updateImageAdjust(index, key, value);
-    // 效能關鍵：調整圖片時，只重繪 SVG，不要重新 renderInputs()
-    // 否則滑桿會在拖動時因為 DOM 重建而失去焦點
-    this.renderer.draw(this.state.data, (i) => this.openFilePicker(i));
-  }
-}
-
-const app = new AppController();
+  // 當 DOM 準備就緒後啟動
+  window.onload = () => {
+      BakuApp.Instances.mainApp = new App();
+  };
+})();
