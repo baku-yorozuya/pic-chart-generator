@@ -327,3 +327,55 @@ input[type="number"] {
   content: '📥';
   font-size: 16px;
 }
+
+.image-adjust-panel {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 5px 0 10px 25px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  animation: slideDown 0.2s ease-out;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+/* 每一組控制項 (標籤 + 輸入框) */
+.adj-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* 縮小標籤 */
+.adj-row label {
+  font-size: 11px; /* 縮小字體 */
+  color: #6c757d;
+  font-weight: 600;
+  white-space: nowrap; /* 防止文字斷行 */
+}
+
+/* 縮小後的數字輸入框 */
+.adj-row input[type="number"] {
+  width: 45px; /* 寬度從 70px 縮小到 45px */
+  padding: 2px 4px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center; /* 數值置中 */
+  outline: none;
+}
+
+/* 隱藏單位，因為空間有限，標籤已經足夠清楚 */
+.adj-unit {
+  font-size: 10px;
+  color: #adb5bd;
+}
+
+/* 移除 Chrome/Safari 的小箭頭以節省空間 */
+.adj-row input::-webkit-outer-spin-button,
+.adj-row input::-webkit-inner-spin-button {
+  opacity: 1;
+  margin: 0;
+}

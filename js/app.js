@@ -130,24 +130,21 @@ class AppController {
         <span>#${i + 1}</span>
         <input type="text" id="txt-${i}" value="${item.label}">
         <input type="number" id="num-${i}" value="${item.percent}" step="any"> %
-        <button class="btn btn-del" onclick="app.handleRemove(${i})">✕</button>
         <div class="image-adjust-panel">
           <div class="adj-row">
             <label>縮放</label>
-            <input type="number" step="0.1" min="0.1" max="10" value="${item.zoom || 1}" onchange="app.handleImgAdj(${i}, 'zoom', this.value)">
-            <span>倍</span>
+            <input type="number" step="0.1" value="${item.zoom || 1}" onchange="app.handleImgAdj(${i}, 'zoom', this.value)">
           </div>
           <div class="adj-row">
             <label>左右</label>
             <input type="number" step="1" value="${item.dx || 0}" onchange="app.handleImgAdj(${i}, 'dx', this.value)">
-            <span>px</span>
           </div>
           <div class="adj-row">
             <label>上下</label>
             <input type="number" step="1" value="${item.dy || 0}" onchange="app.handleImgAdj(${i}, 'dy', this.value)">
-            <span>px</span>
           </div>
         </div>
+        <button class="btn btn-del" onclick="app.handleRemove(${i})">✕</button>
       `;
 
       // 文字更新邏輯不變
