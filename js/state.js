@@ -8,16 +8,25 @@ class DataState {
         percent: 40,
         label: "旅遊生活",
         img: "https://picsum.photos/300/300?random=101",
+        zoom: 1,
+        dx: 0,
+        dy: 0,
       },
       {
         percent: 35,
         label: "科技資訊",
         img: "https://picsum.photos/300/300?random=102",
+        zoom: 1,
+        dx: 0,
+        dy: 0,
       },
       {
         percent: 25,
         label: "美食烹飪",
         img: "https://picsum.photos/300/300?random=103",
+        zoom: 1,
+        dx: 0,
+        dy: 0,
       },
     ];
   }
@@ -52,5 +61,9 @@ class DataState {
     return parseFloat(
       this.data.reduce((sum, item) => sum + item.percent, 0).toFixed(4)
     );
+  }
+
+  updateImageAdjust(index, key, value) {
+    this.data[index][key] = parseFloat(value);
   }
 }

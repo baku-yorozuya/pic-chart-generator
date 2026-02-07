@@ -49,7 +49,7 @@ class ChartRenderer {
       if (item.percent <= 0) return;
 
       // A. 建立圖片填充模式
-      this._createPattern(i, item.img);
+      this._createPattern(item, i, item.img);
 
       // B. 繪製餅塊扇區
       this._drawSegment(item, i, currentOffset, onSegmentClick);
@@ -100,7 +100,7 @@ class ChartRenderer {
   /**
    * 私有方法：建立圖片 Pattern 並抵消旋轉
    */
-  _createPattern(index, imgUrl) {
+  _createPattern(item, index, imgUrl) {
     const pattern = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "pattern"
@@ -114,11 +114,16 @@ class ChartRenderer {
       "http://www.w3.org/2000/svg",
       "image"
     );
+    // 核心邏輯：計算縮放與位移
+    const size = 200 * (item.zoom || 1); 
+    const x = (item.dx || 0) - (size - 200) / 2;
+    const y = (item.dy || 0) - (size - 200) / 2;
+    
     image.setAttributeNS("http://www.w3.org/1999/xlink", "href", imgUrl);
-    image.setAttribute("width", "240");
-    image.setAttribute("height", "240");
-    image.setAttribute("x", "-20");
-    image.setAttribute("y", "-20");
+    image.setAttribute("width", size);
+    image.setAttribute("height", size);
+    image.setAttribute("x", x);
+    image.setAttribute("y", y);
     image.setAttribute("preserveAspectRatio", "xMidYMid slice");
 
     // 關鍵：抵消外層 group 的 rotate(-90)

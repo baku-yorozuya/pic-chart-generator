@@ -131,6 +131,23 @@ class AppController {
         <input type="text" id="txt-${i}" value="${item.label}">
         <input type="number" id="num-${i}" value="${item.percent}" step="any"> %
         <button class="btn btn-del" onclick="app.handleRemove(${i})">✕</button>
+        <div class="image-adjust-panel">
+          <div class="adj-row">
+            <label>縮放</label>
+            <input type="number" step="0.1" min="0.1" max="10" value="${item.zoom || 1}" onchange="app.handleImgAdj(${i}, 'zoom', this.value)">
+            <span>倍</span>
+          </div>
+          <div class="adj-row">
+            <label>左右</label>
+            <input type="number" step="1" value="${item.dx || 0}" onchange="app.handleImgAdj(${i}, 'dx', this.value)">
+            <span>px</span>
+          </div>
+          <div class="adj-row">
+            <label>上下</label>
+            <input type="number" step="1" value="${item.dy || 0}" onchange="app.handleImgAdj(${i}, 'dy', this.value)">
+            <span>px</span>
+          </div>
+        </div>
       `;
 
       // 文字更新邏輯不變
@@ -192,6 +209,13 @@ class AppController {
       // 關鍵：將檔案讀取為 DataURL (Base64)
       reader.readAsDataURL(file);
     }
+  }
+
+  handleImgAdj(index, key, value) {
+    this.state.updateImageAdjust(index, key, value);
+    // 效能關鍵：調整圖片時，只重繪 SVG，不要重新 renderInputs()
+    // 否則滑桿會在拖動時因為 DOM 重建而失去焦點
+    this.renderer.draw(this.state.data, (i) => this.openFilePicker(i));
   }
 }
 
