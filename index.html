@@ -3,12 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>📸 Pic-chart Generator</title>
+    <meta property="og:title" content="Pic-chart Generator - 讓你的數據說故事">
+    <meta property="og:description" content="內建圖片嵌入功能，輕鬆製作專業且美觀的圓餅圖。">
+    <meta property="og:image" content="https://baku-yorozuya.github.io/pic-chart-generator/preview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:url" content="https://baku-yorozuya.github.io/pic-chart-generator">
+    <title>Pic-chart Generator</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/BaseOverlay.css" />
     <link rel="stylesheet" href="css/Toolbar.css" />
     <link rel="stylesheet" href="css/DonationModal.css" />
     <link rel="stylesheet" href="css/CommentDrawer.css" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Pic-chart Generator",
+        "operatingSystem": "Windows, macOS, Android, iOS",
+        "applicationCategory": "DesignApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "TWD"
+        },
+        "featureList": "圖片嵌入餅塊, 自動標籤防撞演算法, 高解析度 PNG 導出, 即時數據編輯",
+        "description": "這是一款強大的圓餅圖視覺化工具，讓使用者能將自定義圖片嵌入扇形區域，並透過智能演算法自動排列標籤防止重疊。"
+      }
+    </script>
   </head>
   <body>
     <div id="app-overlay" class="overlay-mask"></div>
@@ -19,7 +43,9 @@
       </header>
 
       <div id="hint-bar" class="hint-bar">
-        <span id="hint-text">💡 點擊餅塊編輯圖片位置 | 編輯下方清單調整數據 💡</span>
+        <span id="hint-text"
+          >💡 點擊餅塊編輯圖片位置 | 編輯下方清單調整數據 💡</span
+        >
       </div>
 
       <section id="chart-viewport">
