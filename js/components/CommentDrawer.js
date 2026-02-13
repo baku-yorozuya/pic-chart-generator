@@ -13,6 +13,18 @@ BakuApp.Components.CommentDrawer = class extends (
   constructor(containerId = "drawer-container") {
     super(containerId);
     this.renderContent(this._getTemplate());
+    this.config = {
+      repo: "baku-yorozuya/pic-chart-generator",
+      repoId: "R_kgDORI_aMQ",
+      mapping: "number",
+      term: "3",
+      reactionsEnabled: "1",
+      emitMetadata: "0",
+      inputPosition: "bottom",
+      theme: "preferred_color_scheme",
+      lang: "zh-TW",
+      crossOrigin: "anonymous",
+    };
   }
 
   _getTemplate() {
@@ -33,17 +45,18 @@ BakuApp.Components.CommentDrawer = class extends (
     if (this.container.querySelector("script")) return;
     const script = document.createElement("script");
     script.src = "https://giscus.app/client.js";
-    script["data-repo"] = "baku-yorozuya/pic-chart-generator";
-    script["data-repo-id"] = "R_kgDORI_aMQ";
-    script["data-mapping"] = "number";
-    script["data-term"] = "3";
-    script["data-strict"] = "0";
-    script["data-reactions-enabled"] = "1";
-    script["data-emit-metadata"] = "0";
-    script["data-input-position"] = "bottom";
-    script["data-theme"] = "preferred_color_scheme";
-    script["data-lang"] = "zh-TW";
-    script["data-origin"] = window.location.origin;
+    script.src = "https://giscus.app/client.js";
+    script.setAttribute("data-repo", this.config.repo);
+    script.setAttribute("data-repo-id", this.config.repoId);
+    script.setAttribute("data-mapping", this.config.mapping);
+    script.setAttribute("data-term", this.config.term);
+    script.setAttribute("data-strict", "0");
+    script.setAttribute("data-reactions-enabled", "1");
+    script.setAttribute("data-emit-metadata", "0");
+    script.setAttribute("data-input-position", "top");
+    script.setAttribute("data-theme", this.config.theme);
+    script.setAttribute("data-lang", this.config.lang);
+    script.setAttribute("data-origin", window.location.origin); // 防止CORS錯誤
     script.crossOrigin = "anonymous";
     script.async = true;
     this.container.querySelector(".giscus").appendChild(script);
