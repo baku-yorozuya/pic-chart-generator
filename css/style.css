@@ -86,7 +86,7 @@ html {
 
 /* 數據編輯工具欄 */
 #toolbar-container {
-  height: 300px; /* 固定高度 */
+  height: 40%; /* 固定高度 */
   flex-shrink: 0; /* 關鍵：禁止 Toolbar 被壓縮 */
   background: #ffffff;
   border-top: 1px solid #dfe6e9;
@@ -94,9 +94,6 @@ html {
 
 /* 響應式微調 (手機端) */
 @media (max-width: 600px) {
-  #toolbar-container {
-    height: 250px;
-  }
   .fab-container {
     bottom: 270px;
     right: 15px;
