@@ -20,6 +20,7 @@ BakuApp.Middleware.Export = class {
    * @param {string} fileName - 下載的檔案名稱
    */
   async exportToPng(fileName = "pic-chart.png") {
+    console.log("[Export] 開始執行 PNG 導出...");
     // 1. 取得 SVG 當前的 viewBox 數值
     const vb = this.svg.viewBox.baseVal;
     const svgWidth = vb.width;
@@ -34,9 +35,31 @@ BakuApp.Middleware.Export = class {
 
     const ctx = canvas.getContext("2d");
 
-    // 3. 序列化 SVG
+    // 3. 【關鍵優化】處理 SVG 內部的所有 <image> 標籤，將路徑轉為 Base64
+    // 這是為了確保 Blob 能夠讀取到圖片數據
+    const svgClone = this.svg.cloneNode(true);
+    const images = svgClone.querySelectorAll("image");
+    console.log(`[Export] 找到 ${images.length} 個圖片節點`);
+    
+    for (let imgNode of images) {
+      const href = imgNode.getAttribute("href");
+      console.log(`[Export] 處理圖片路徑: ${href}`);
+      if (href && !href.startsWith("data:")) {
+        try {
+          const base64 = await this._imageUrlToBase64(href);
+          imgNode.setAttribute("href", base64);
+          console.log(`[Export] 圖片成功轉為 Base64 (長度: ${base64.length})`);
+        } catch (e) {
+          console.error(`[Export] 圖片轉換失敗: ${href}`, e);
+        }
+      } else {
+        console.log(`[Export] 圖片已是 Base64 或路徑為空，跳過。`);
+      }
+    }
+
+    // 4. 序列化克隆後的 SVG
     const serializer = new XMLSerializer();
-    const svgString = serializer.serializeToString(this.svg);
+    const svgString = serializer.serializeToString(svgClone);
     const svgBlob = new Blob([svgString], {
       type: "image/svg+xml;charset=utf-8",
     });
@@ -44,96 +67,50 @@ BakuApp.Middleware.Export = class {
 
     const img = new Image();
     img.onload = () => {
-      // 4. 繪製到畫布時，確保不使用固定數值，而是填滿 canvas
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      console.log("[Export] SVG Blob 已載入至 Image 物件，開始繪製 Canvas");
+      // 繪製白色背景（否則輸出會是透明底）
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // 繪製圖表
+      try {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const pngUrl = canvas.toDataURL("image/png");
+        console.log("[Export] Canvas 成功轉為 PNG URL");
 
-      // 5. 下載
-      const pngUrl = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = pngUrl;
-      link.download = fileName;
-      link.click();
+        const link = document.createElement("a");
+        link.href = pngUrl;
+        link.download = fileName;
+        link.click();
+      } catch (err) {
+        console.error("[Export] Canvas 繪製或導出時發生安全性錯誤 (可能觸發 Tainted Canvas):", err);
+      }
 
       URL.revokeObjectURL(url);
     };
+    img.onerror = (err) => console.error("[Export] SVG Image 載入失敗:", err);
     img.src = url;
   }
 
   /**
    * @private
-   * @description 將 SVG 物件轉換為包含命名空間的 XML 字串
+   * @description 輔助函式：將圖片路徑轉為 Base64 字串
    */
-  _serializeSvg() {
-    const serializer = new XMLSerializer();
-    let source = serializer.serializeToString(this.svg);
-
-    // 強制添加 XML 命名空間，否則 Canvas Image 無法讀取
-    if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
-      source = source.replace(
-        /^<svg/,
-        '<svg xmlns="http://www.w3.org/2000/svg"'
-      );
-    }
-    if (
-      !source.match(
-        /^<svg[^>]+xmlns\:xlink="http\:\/\/www\.w3\.org\/1999\/xlink"/
-      )
-    ) {
-      source = source.replace(
-        /^<svg/,
-        '<svg xmlns:xlink="http://www.w3.org/1999/xlink"'
-      );
-    }
-
-    return '<?xml version="1.0" standalone="no"?>\r\n' + source;
-  }
-
-  /**
-   * @private
-   * @description 使用 Canvas 作為中介，將 SVG 字串渲染為點陣圖形
-   */
-  _renderToCanvas(svgData) {
+  _imageUrlToBase64(url) {
     return new Promise((resolve, reject) => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
       const img = new Image();
-
-      // 設定 Canvas 尺寸與 SVG 視窗一致
-      const rect = this.svg.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-
-      const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-
+      img.crossOrigin = "anonymous"; // 避免跨域問題
       img.onload = () => {
-        // 核心：保持透明背景（不填充 fillRect）
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        URL.revokeObjectURL(url);
-        resolve(canvas);
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
       };
-
-      img.onerror = (err) => {
-        URL.revokeObjectURL(url);
-        reject(err);
-      };
-
+      img.onerror = reject;
       img.src = url;
     });
-  }
-
-  /**
-   * @private
-   * @description 觸發瀏覽器下載行為
-   */
-  _download(canvas, fileName) {
-    const link = document.createElement("a");
-    link.download = fileName;
-    link.href = canvas.toDataURL("image/png");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   }
 };
 

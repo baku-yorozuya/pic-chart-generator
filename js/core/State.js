@@ -20,7 +20,7 @@ BakuApp.Core.State = class {
         id: "seg-init-1",
         name: "項目 1",
         ratio: 40.0,
-        imageUrl: "https://picsum.photos/300/300?random=101",
+        imageUrl: "img/cheese.png",
         imageScale: 1.0, // 1.0 代表原始大小（例如 400px）
         imageOffset: { x: 0, y: 0 },
       },
@@ -28,7 +28,7 @@ BakuApp.Core.State = class {
         id: "seg-init-2",
         name: "項目 2",
         ratio: 30.0,
-        imageUrl: "https://picsum.photos/300/300?random=102",
+        imageUrl: "img/code.png",
         imageScale: 1.0,
         imageOffset: { x: 0, y: 0 },
       },
@@ -36,7 +36,7 @@ BakuApp.Core.State = class {
         id: "seg-init-3",
         name: "項目 3",
         ratio: 30.0,
-        imageUrl: "https://picsum.photos/300/300?random=103",
+        imageUrl: "img/poor.png",
         imageScale: 1.0,
         imageOffset: { x: 0, y: 0 },
       },
@@ -77,7 +77,7 @@ BakuApp.Core.State = class {
       id: "seg-" + Date.now(),
       name: "新項目",
       ratio: 1.0, // Default percentage is 1
-      imageUrl: `https://picsum.photos/500/500?random=${Date.now()}`,
+      imageUrl: `img/new.png`,
       imageScale: 1.0,
       imageOffset: { x: 0, y: 0 },
     };
