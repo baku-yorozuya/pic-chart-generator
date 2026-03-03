@@ -31,7 +31,7 @@
         "offers": {
           "@type": "Offer",
           "price": "0",
-          "priceCurrency": "TWD"
+          "priceCurrency": "HKD"
         },
         "featureList": "圖片嵌入餅塊, 自動標籤防撞演算法, 高解析度 PNG 導出, 即時數據編輯",
         "description": "這是一款圓餅圖視覺化工具，讓使用者能將自定義圖片嵌入扇形區域，並透過演算法自動排列標籤防止重疊。可直接導出為 PNG 格式。"
@@ -39,6 +39,9 @@
     </script>
   </head>
   <body>
+    <!-- 隱藏預覽縮圖 -->
+    <img src="preview_500_500.png" alt="preview" style="display:none;" aria-hidden="true" />
+
     <div id="app-overlay" class="overlay-mask"></div>
 
     <main id="app-root">
@@ -47,9 +50,9 @@
       </header>
 
       <div id="hint-bar" class="hint-bar">
-        <span id="hint-text"
-          >💡 點擊餅塊編輯圖片位置 | 編輯下方清單調整數據 💡</span
-        >
+        <span id="hint-text">
+          💡 點擊餅塊編輯圖片位置 | 編輯下方清單調整數據 💡
+        </span>
       </div>
 
       <section id="chart-viewport">
