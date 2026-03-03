@@ -20,7 +20,6 @@ BakuApp.Middleware.Export = class {
    * @param {string} fileName - 下載的檔案名稱
    */
   async exportToPng(fileName = "pic-chart.png") {
-    console.log("[Export] 開始執行 PNG 導出...");
     // 1. 取得 SVG 當前的 viewBox 數值
     const vb = this.svg.viewBox.baseVal;
     const svgWidth = vb.width;
@@ -39,21 +38,16 @@ BakuApp.Middleware.Export = class {
     // 這是為了確保 Blob 能夠讀取到圖片數據
     const svgClone = this.svg.cloneNode(true);
     const images = svgClone.querySelectorAll("image");
-    console.log(`[Export] 找到 ${images.length} 個圖片節點`);
     
     for (let imgNode of images) {
       const href = imgNode.getAttribute("href");
-      console.log(`[Export] 處理圖片路徑: ${href}`);
       if (href && !href.startsWith("data:")) {
         try {
           const base64 = await this._imageUrlToBase64(href);
           imgNode.setAttribute("href", base64);
-          console.log(`[Export] 圖片成功轉為 Base64 (長度: ${base64.length})`);
         } catch (e) {
           console.error(`[Export] 圖片轉換失敗: ${href}`, e);
         }
-      } else {
-        console.log(`[Export] 圖片已是 Base64 或路徑為空，跳過。`);
       }
     }
 
@@ -67,7 +61,6 @@ BakuApp.Middleware.Export = class {
 
     const img = new Image();
     img.onload = () => {
-      console.log("[Export] SVG Blob 已載入至 Image 物件，開始繪製 Canvas");
       // 繪製白色背景（否則輸出會是透明底）
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -76,7 +69,6 @@ BakuApp.Middleware.Export = class {
       try {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         const pngUrl = canvas.toDataURL("image/png");
-        console.log("[Export] Canvas 成功轉為 PNG URL");
 
         const link = document.createElement("a");
         link.href = pngUrl;
@@ -88,7 +80,6 @@ BakuApp.Middleware.Export = class {
 
       URL.revokeObjectURL(url);
     };
-    img.onerror = (err) => console.error("[Export] SVG Image 載入失敗:", err);
     img.src = url;
   }
 
