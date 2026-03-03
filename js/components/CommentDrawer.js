@@ -31,7 +31,7 @@ BakuApp.Components.CommentDrawer = class extends (
     return /*html*/ `
           <div class="drawer-content" id="comment-box">
               <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <h3>💬 社群討論</h3>
+                  <h2>💬 社群討論</h2>
                   <button class="close-trigger" style="border:none; background:none; font-size:24px; cursor:pointer;">&times;</button>
               </div>
               <div class="drawer-body">
