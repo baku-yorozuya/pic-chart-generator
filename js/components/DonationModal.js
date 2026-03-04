@@ -10,7 +10,7 @@
 BakuApp.Components.DonationModal = class extends (
   BakuApp.Components.BaseOverlay
 ) {
-  constructor(containerId = "modal-container") {
+  constructor(containerId = "donation-modal-container") {
     super(containerId);
     this.renderContent(this._getTemplate());
   }
@@ -28,7 +28,7 @@ BakuApp.Components.DonationModal = class extends (
           </p>
           <div class="donation-options">
             <a href="https://www.buymeacoffee.com/baku_yorozuya">
-              <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=baku_yorozuya&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" />
+              <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=baku_yorozuya&button_colour=FFDD00&font_colour=000000&font_family=Comic&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a coffee" />
             </a>
           </div>
         </div>

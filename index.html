@@ -1,24 +1,39 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta property="og:site_name" content="Pic-chart Generator - 為你的圓餅加上圖片">
+
+    <!-- SEO -->
+    <!-- HTML Meta Tags -->
+    <title>Pic-chart Generator - 為你的圓餅加上圖片</title>
     <meta property="title" content="Pic-chart Generator - 為你的圓餅加上圖片">
-    <meta property="og:title" content="Pic-chart Generator - 為你的圓餅加上圖片">
     <meta property="description" content="圓餅圖視覺化工具，讓使用者能將自定義圖片嵌入扇形區域，並透過演算法自動排列標籤防止重疊。可直接導出為 PNG 格式。">
+    <!-- Open Graph (Facebook/Instagram) -->
+    <meta property="og:site_name" content="Pic-chart Generator - 為你的圓餅加上圖片">
+    <meta property="og:title" content="Pic-chart Generator - 為你的圓餅加上圖片">
     <meta property="og:description" content="圓餅圖視覺化工具，讓使用者能將自定義圖片嵌入扇形區域，並透過演算法自動排列標籤防止重疊。可直接導出為 PNG 格式。">
-    <meta property="og:image" content="https://raw.githubusercontent.com/baku-yorozuya/pic-chart-generator/refs/heads/main/preview-1200x630.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pic-chart-generator.vercel.app">
+    <meta property="og:image" content="https://pic-chart-generator.vercel.app/preview-1200x630.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:url" content="https://pic-chart-generator.vercel.app">
-    <meta name="thumbnail" content="https://raw.githubusercontent.com/baku-yorozuya/pic-chart-generator/refs/heads/main/preview-500x500.png" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="pic-chart-generator.vercel.app">
+    <meta property="twitter:url" content="https://pic-chart-generator.vercel.app">
+    <meta name="twitter:title" content="Pic-chart Generator - 為你的圓餅加上圖片">
+    <meta name="twitter:description" content="圓餅圖視覺化工具，讓使用者能將自定義圖片嵌入扇形區域，並透過演算法自動排列標籤防止重疊。可直接導出為 PNG 格式。">
+    <meta name="twitter:image" content="https://pic-chart-generator.vercel.app/preview-1200x630.png">
+    <meta name="thumbnail" content="https://pic-chart-generator.vercel.app/preview-500x500.png" />
+    <link rel="canonical" href="https://pic-chart-generator.vercel.app/">
     <link rel="icon" sizes="48x48" href="favicon-48x48.png" type="image/png">
     <link rel="icon" sizes="192x192" href="favicon.png" type="image/png">
     <link rel="icon" sizes="512x512" href="favicon-512x512.png" type="image/png">
     <link rel="apple-touch-icon" href="favicon-512x512.png">
-    <title>Pic-chart Generator - 為你的圓餅加上圖片</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/BaseOverlay.css" />
     <link rel="stylesheet" href="css/Toolbar.css" />
@@ -28,9 +43,9 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
+        "@type": ["SoftwareApplication", "WebApplication"],
         "name": "Pic-chart Generator",
-        "operatingSystem": "Windows, macOS, Android, iOS",
+        "operatingSystem": "Windows, macOS, Android, iOS, Web",
         "applicationCategory": "DesignApplication",
         "offers": {
           "@type": "Offer",
@@ -50,6 +65,7 @@
 
     <main id="app-root">
       <header class="app-header">
+        <button id="btn-information" class="fab btn-information">i</button>
         <h1>🥧 Pic-chart Generator 🥧</h1>
       </header>
 
@@ -74,7 +90,32 @@
       <aside id="toolbar-container"></aside>
     </main>
 
-    <div id="modal-container"></div>
+    <div id="information-modal-container">
+      <div class="modal-content" id="information-box">
+        <button class="close-trigger" style="border:none; background:none; font-size:24px; cursor:pointer;">&times;</button>
+        <section class="seo-content" style="max-width: 800px; margin: 40px auto; padding: 20px; line-height: 1.6; color: #555;">
+          <h2>關於 Pic-chart Generator - 專業的圖片圓餅圖製作工具</h2>
+          <p>
+            <strong>Pic-chart Generator</strong> 是一款創新的線上<strong>圓餅圖產生器 (Pie Chart Maker)</strong>，專為需要視覺化美感的設計師與數據分析師打造。
+            不同於傳統枯燥的單色圖表，我們的工具允許使用者將<strong>自定義圖片嵌入</strong>圓餅圖的各個扇形區塊中，讓您的數據呈現更具故事性與辨識度。
+          </p>
+        
+          <h3>為什麼選擇我們的圖片圓餅圖工具？</h3>
+          <ul>
+            <li><strong>直覺的操作介面</strong>：無需下載軟體，透過瀏覽器即可快速新增餅塊、調整比例。</li>
+            <li><strong>個性化圖片嵌入</strong>：支援上傳本地圖片，輕鬆將產品照片、頭像或圖示融入圖表。</li>
+            <li><strong>高品質 PNG 下載</strong>：一鍵導出高解析度圖表，適用於簡報、社群媒體與個人網誌。</li>
+            <li><strong>完全免費且開源</strong>：提供最流暢的圖表製作體驗，無須註冊即可開始創作。</li>
+          </ul>
+        
+          <h3>如何製作一個帶有圖片的圓餅圖？</h3>
+          <p>
+            只需簡單三個步驟：首先，在清單中點擊圖片按鈕上傳您的素材；接著，調整各個項目的數值比例，系統會即時更新圖表預覽；最後，點擊「下載圖片」按鈕，即可獲得專屬於您的<strong>客製化圓餅圖</strong>。
+          </p>
+        </section>
+      </div>
+    </div>
+    <div id="donation-modal-container"></div>
     <div id="drawer-container"></div>
 
     <script src="js/namespace.js" ></script>
@@ -85,6 +126,7 @@
     <script src="js/components/PicChart.js"></script>
     <script src="js/components/Toolbar.js"></script>
     <script src="js/components/DonationModal.js"></script>
+    <script src="js/components/InformationModal.js"></script>
     <script src="js/components/CommentDrawer.js"></script>
 
     <script src="js/middleware/Interaction.js"></script>

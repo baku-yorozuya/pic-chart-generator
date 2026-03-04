@@ -40,7 +40,8 @@
 
           // 4. 初始化 UI 組件
           BakuApp.Instances.toolbar = new BakuApp.Components.Toolbar('toolbar-container');
-          BakuApp.Instances.donation = new BakuApp.Components.DonationModal('modal-container');
+          BakuApp.Instances.donation = new BakuApp.Components.DonationModal('donation-modal-container');
+          BakuApp.Instances.information = new BakuApp.Components.InformationModal('information-modal-container');
           BakuApp.Instances.comments = new BakuApp.Components.CommentDrawer('drawer-container');
 
           this.bindGlobalEvents();
@@ -55,6 +56,11 @@
           this.emitter.on('STATE_CHANGED', (data) => {
               BakuApp.Instances.chart.render(data.segments);
           });
+
+          // 關於按鈕
+          document.getElementById('btn-information').onclick = () => {
+              BakuApp.Instances.information.show();
+          };
 
           // 贊助按鈕
           document.getElementById('btn-donation').onclick = () => {
