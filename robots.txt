@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Allow: /img/
+Sitemap: https://pic-chart-generator.vercel.app/sitemap.xml

@@ -74,8 +74,8 @@ BakuApp.Components.BaseOverlay = class {
    * @protected
    * @description 渲染內容並自動綁定內部的關閉按鈕
    */
-  renderContent(htmlContent) {
-    this.container.innerHTML = htmlContent;
+  renderContent(htmlContent = null) {
+    if (htmlContent !== null) this.container.innerHTML = htmlContent;
     const closeBtns = this.container.querySelectorAll(".close-trigger");
     closeBtns.forEach((btn) => {
       btn.addEventListener("click", () => this.hide());
