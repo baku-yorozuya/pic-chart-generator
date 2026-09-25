@@ -27,7 +27,7 @@ html {
 #app-root {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* 鎖死為螢幕高度 */
+  height: 100dvh; /* 鎖死為螢幕高度 */
   width: 100vw;
   overflow: hidden; /* 防止整體出現捲軸 */
 }
