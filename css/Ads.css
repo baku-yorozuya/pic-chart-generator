@@ -1,0 +1,28 @@
+/**
+ * AdSense slot styles — keep layout compact so the chart tool stays usable.
+ */
+.ad-slot {
+  flex-shrink: 0;
+  width: 100%;
+  min-height: 0;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dfe6e9;
+  overflow: hidden;
+}
+
+.ad-slot[hidden] {
+  display: none !important;
+}
+
+.ad-slot .adsbygoogle {
+  display: block;
+  width: 100%;
+  min-height: 60px;
+  max-height: 100px;
+}
+
+@media (max-width: 600px) {
+  .ad-slot .adsbygoogle {
+    max-height: 90px;
+  }
+}

@@ -3,12 +3,18 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://pic-chart-generator.vercel.app/</loc>
-    <lastmod>2026-03-05</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://pic-chart-generator.vercel.app/preview-500x500.png</image:loc>
+      <image:loc>https://pic-chart-generator.vercel.app/preview-1200x630.png</image:loc>
       <image:title>Pic-chart Generator 圓餅圖製作範例</image:title>
     </image:image>
+  </url>
+  <url>
+    <loc>https://pic-chart-generator.vercel.app/privacy.html</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>
